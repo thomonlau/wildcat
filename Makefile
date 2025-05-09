@@ -133,14 +133,16 @@ RUST_PROJECT = starter-project
 RUST_TARGET = riscv32i-unknown-none-elf
 PATH_TO_COMPILED_RUST = rust/$(RUST_PROJECT)/target/$(RUST_TARGET)/release
 
+rust-llvm:
+	cd rust/$(RUST_PROJECT) && RUSTFLAGS="--emit=llvm-ir,obj" cargo build --target $(RUST_TARGET) --release
+
 rust-compile:
-	cd rust/$(RUST_PROJECT) && cargo build --target $(RUST_TARGET) --release
 	rust-objcopy $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT) -O binary -j .text $(PATH_TO_COMPILED_RUST)/text.bin
 	rust-objcopy $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT) -O binary -j .data $(PATH_TO_COMPILED_RUST)/data.bin
 	cat $(PATH_TO_COMPILED_RUST)/text.bin $(PATH_TO_COMPILED_RUST)/data.bin > $(PATH_TO_COMPILED_RUST)/$(RUST_APP).bin
 
 rust-run:
-	sbt "runMain wildcat.isasim.SimRV $(PATH_TO_COMPILED_RUST)/$(RUST_APP).bin"
+	sbt "runMain wildcat.isasim.SimsRV $(PATH_TO_COMPILED_RUST)/$(RUST_APP).bin"
 
 rust-disassemble:
 	rust-objdump --disassemble --arch=riscv32 $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT)
