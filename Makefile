@@ -128,24 +128,43 @@ listen:
 
 # stop with Ctrl+A and Ctrl+\
 
-# Rust integration
+# Rust integration (upstream integration)
 RUST_PROJECT = starter-project
 RUST_TARGET = riscv32i-unknown-none-elf
 PATH_TO_COMPILED_RUST = rust/$(RUST_PROJECT)/target/$(RUST_TARGET)/release
 
-rust-llvm:
-	cd rust/$(RUST_PROJECT) && RUSTFLAGS="--emit=llvm-ir,obj" cargo build --target $(RUST_TARGET) --release
+rust-upstream-compile:
+	cd rust/$(RUST_PROJECT) && cargo build --release
+	cd $(PATH_TO_COMPILED_RUST) && mv $(RUST_PROJECT) $(RUST_PROJECT).out
 
-rust-compile:
-	rust-objcopy $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT) -O binary -j .text $(PATH_TO_COMPILED_RUST)/text.bin
-	rust-objcopy $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT) -O binary -j .data $(PATH_TO_COMPILED_RUST)/data.bin
-	cat $(PATH_TO_COMPILED_RUST)/text.bin $(PATH_TO_COMPILED_RUST)/data.bin > $(PATH_TO_COMPILED_RUST)/$(RUST_APP).bin
+rust-upstream-run-isa-sim: rust-upstream-compile
+	sbt "runMain wildcat.isasim.SimRV $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT).out"
 
-rust-run:
-	sbt "runMain wildcat.isasim.SimsRV $(PATH_TO_COMPILED_RUST)/$(RUST_APP).bin"
+rust-upstream-run-pipeline: rust-wcet-link
+	sbt "runMain wildcat.pipeline.WildcatTop $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT).out"
 
-rust-disassemble:
-	rust-objdump --disassemble --arch=riscv32 $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT)
+rust-upstream-disassemble: rust-upstream-compile
+	rust-objdump --disassemble --arch=riscv32 $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT).out
+
+# Rust integration (WCET)
+rust-wcet-compile:
+	cd rust/starter-project && rustc --emit=llvm-ir --target=riscv32imc-unknown-none-elf -C opt-level=3 src/main.rs
+	cd rust/starter-project && clang -target riscv32-unknown-elf -c -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 main.ll -o main.o
+
+rust-wcet-analyse: rust-wcet-compile
+	cd rust/starter-project && platin wcet -i main.ll.pml -b main.o --report --analysis-entry “_start”
+
+rust-wcet-link: rust-wcet-compile
+	cd rust/starter-project && riscv64-unknown-elf-ld -o main.out main.o -m elf32lriscv -Ttext 0
+
+rust-wcet-run-isa-sim: rust-wcet-link
+	sbt "runMain wildcat.isasim.SimRV rust/starter-project/main.out"
+
+rust-wcet-run-pipeline: rust-wcet-link
+	sbt "runMain wildcat.pipeline.WildcatTop rust/starter-project/main.out"
+
+rust-wcet-disassemble: rust-wcet-compile
+	riscv64-unknown-elf-objdump -d rust/starter-project/main.out
 
 clean:
 	git clean -fd

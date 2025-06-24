@@ -24,6 +24,6 @@ fn uart_print(s: &str) {
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    uart_print("Hello from Rust! ");
+    uart_print("Hello from Rust!");
     loop {};
 }
