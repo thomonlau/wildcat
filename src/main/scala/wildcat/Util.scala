@@ -72,7 +72,7 @@ object Util {
     arr
   }
 
-  def readElf(fileName: String): Array[Int] = {
+  def readElf(fileName: String): (Array[Int], Int) = {
     val elf = ElfFile.from(new File(fileName))
     if (!elf.is32Bits() || elf.e_machine != 0xf3) throw new Exception("Not a RV32I executable")
     /*
@@ -81,10 +81,11 @@ object Util {
       println(s"section $i: ${sect.header.getName} ${sect.header.sh_name} ${sect.header.sh_addr} ${sect.header.sh_size}")
     }
      */
+    val startAddress = (elf.e_entry).asInstanceOf[Int]
     val textSection = elf.firstSectionByName(".text")
     val text = byteToWord(textSection.getData)
     val dataSection = elf.firstSectionByName(".data")
-    if (dataSection == null) return text
+    if (dataSection == null) return (text, startAddress)
 
     val data = byteToWord(dataSection.getData)
     val length = text.length + data.length + ((dataSection.header.sh_addr - textSection.header.sh_size) / 4)
@@ -95,7 +96,7 @@ object Util {
     for (i <- 0 until data.length) {
       mem((dataSection.header.sh_addr/4 + i).toInt) = data(i)
     }
-    mem
+    (mem, startAddress)
   }
 
   def getCode(name: String): (Array[Int], Int) = {
@@ -103,7 +104,7 @@ object Util {
       if (name.endsWith(".bin")) {
         (Util.readBin(name), 0)
       } else if (name.endsWith(".out")) {
-        (Util.readElf(name), 0)
+        (Util.readElf(name))
       } else if (name.endsWith(".hex")) {
         (Util.readHex(name), 0x200)
       } else {
