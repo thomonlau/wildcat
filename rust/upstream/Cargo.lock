@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "upstream-project"
+name = "upstream"
 version = "0.1.0"
