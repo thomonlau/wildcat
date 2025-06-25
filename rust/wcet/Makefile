@@ -12,7 +12,7 @@ help: ## Show this help.
 
 compile: ## Compiles using 'rustc' to emit LLVM-IR and 'clang' as driver for code and PML generation.
 	mkdir -p $(PATH_TO_COMPILED)
-	cd $(PATH_TO_COMPILED) && rustc --emit=llvm-ir -C opt-level=3 ../src/main.rs
+	cd $(PATH_TO_COMPILED) && rustc --emit=llvm-ir --target=riscv32imc-unknown-none-elf -C opt-level=3 ../src/main.rs
 	cd $(PATH_TO_COMPILED) && clang -target riscv32-unknown-elf -c -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 main.ll -o main.o
 
 wcet-analysis: ## Runs the Platin WCET tool on 'main.o' and 'main.ll.pml' using entry defined by ENTRY_POINT.

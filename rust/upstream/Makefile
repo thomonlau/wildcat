@@ -10,7 +10,7 @@ help: ## Show this help.
 
 compile: ## Compiles using 'cargo build'.
 	cargo build --release
-	mv $(PATH_TO_COMPILED)/$(PROJECT_NAME) $(PATH_TO_COMPILED)/$(PROJECT_NAME).out
+	cp $(PATH_TO_COMPILED)/$(PROJECT_NAME) $(PATH_TO_COMPILED)/$(PROJECT_NAME).out
 
 run-isa-sim: ## Runs the ISA simulator.
 	make compile
