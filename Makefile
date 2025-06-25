@@ -144,10 +144,18 @@ rust-run-pipeline:
 	make -C rust/$(RUST_PROJECT) run-pipeline
 
 rust-disassembly:
-	make -C rust/$(RUST_PROJECT) disassemble
+	make -C rust/$(RUST_PROJECT) disassembly
 
 rust-clean:
 	make -C rust/$(RUST_PROJECT) clean
+
+rust-link:
+ifeq ($(RUST_PROJECT), wcet)
+	@make -C rust/$(RUST_PROJECT) link
+else
+	@echo "External linking is only relevant for the 'wcet' project, as it will otherwise be handled by 'cargo'." >&2
+	@exit 1
+endif
 
 rust-wcet-analysis:
 ifeq ($(RUST_PROJECT), wcet)

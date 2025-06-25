@@ -22,6 +22,12 @@ fn uart_print(s: &str) {
     }
 }
 
+#[inline(never)]
+#[no_mangle]
+fn foo() {
+    uart_print("Foo");
+}
+
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
     uart_print("Hello from Rust!");
