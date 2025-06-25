@@ -128,43 +128,34 @@ listen:
 
 # stop with Ctrl+A and Ctrl+\
 
-# Rust integration (upstream integration)
-RUST_PROJECT = starter-project
-RUST_TARGET = riscv32i-unknown-none-elf
-PATH_TO_COMPILED_RUST = rust/$(RUST_PROJECT)/target/$(RUST_TARGET)/release
+# Rust integration
+RUST_PROJECT=wcet
 
-rust-upstream-compile:
-	cd rust/$(RUST_PROJECT) && cargo build --release
-	cd $(PATH_TO_COMPILED_RUST) && mv $(RUST_PROJECT) $(RUST_PROJECT).out
+rust-help:
+	make -C rust/$(RUST_PROJECT) help
 
-rust-upstream-run-isa-sim: rust-upstream-compile
-	sbt "runMain wildcat.isasim.SimRV $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT).out"
+rust-compile:
+	make -C rust/$(RUST_PROJECT) compile
 
-rust-upstream-run-pipeline: rust-wcet-link
-	sbt "runMain wildcat.pipeline.WildcatTop $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT).out"
+rust-run-isa-sim:
+	make -C rust/$(RUST_PROJECT) run-isa-sim
 
-rust-upstream-disassemble: rust-upstream-compile
-	rust-objdump --disassemble --arch=riscv32 $(PATH_TO_COMPILED_RUST)/$(RUST_PROJECT).out
+rust-run-pipeline:
+	make -C rust/$(RUST_PROJECT) run-pipeline
 
-# Rust integration (WCET)
-rust-wcet-compile:
-	cd rust/starter-project && rustc --emit=llvm-ir --target=riscv32imc-unknown-none-elf -C opt-level=3 src/main.rs
-	cd rust/starter-project && clang -target riscv32-unknown-elf -c -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 main.ll -o main.o
+rust-disassemble:
+	make -C rust/$(RUST_PROJECT) disassemble
 
-rust-wcet-analyse: rust-wcet-compile
-	cd rust/starter-project && platin wcet -i main.ll.pml -b main.o --report --analysis-entry “_start”
+rust-clean:
+	make -C rust/$(RUST_PROJECT) clean
 
-rust-wcet-link: rust-wcet-compile
-	cd rust/starter-project && riscv64-unknown-elf-ld -o main.out main.o -m elf32lriscv -Ttext 0
-
-rust-wcet-run-isa-sim: rust-wcet-link
-	sbt "runMain wildcat.isasim.SimRV rust/starter-project/main.out"
-
-rust-wcet-run-pipeline: rust-wcet-link
-	sbt "runMain wildcat.pipeline.WildcatTop rust/starter-project/main.out"
-
-rust-wcet-disassemble: rust-wcet-compile
-	riscv64-unknown-elf-objdump -d rust/starter-project/main.out
+rust-wcet-analysis:
+ifeq ($(RUST_PROJECT), wcet)
+	@make -C rust/$(RUST_PROJECT) wcet-analysis
+else
+	@echo "WCET analysis not supported for RUST_PROJECT '$(RUST_PROJECT)'. RUST_PROJECT must be 'wcet'." >&2
+	@exit 1
+endif
 
 clean:
 	git clean -fd
