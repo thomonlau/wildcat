@@ -20,9 +20,9 @@ run-pipeline: ## Runs the pipeline simulator.
 	make compile
 	cd $(ROOT_DIR) && sbt "runMain wildcat.pipeline.WildcatTop $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/$(PROJECT_NAME).out"
 
-disassemble: ## Shows disassembly using 'rust-objdump'.
+disassembly: ## Shows disassembly using 'rust-objdump'.
 	make compile
-	rust-objdump --disassemble --arch=riscv32 $(PATH_TO_COMPILED)/$(PROJECT_NAME).out
+	rust-objdump -dfh --arch=riscv32 $(PATH_TO_COMPILED)/$(PROJECT_NAME).out
 
 clean: ## Cleans the compiled sources.
 	cargo clean

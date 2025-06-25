@@ -31,9 +31,9 @@ run-pipeline: ## Runs the pipeline simulator.
 	make link
 	cd $(ROOT_DIR) && sbt "runMain wildcat.pipeline.WildcatTop $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/main.out"
 
-disassemble: ## Shows disassembly using 'riscv64-unknown-elf-objdump'.
+disassembly: ## Shows disassembly using 'riscv64-unknown-elf-objdump'.
 	make link
-	cd $(PATH_TO_COMPILED) && riscv64-unknown-elf-objdump -d main.out
+	cd $(PATH_TO_COMPILED) && riscv64-unknown-elf-objdump -dfh main.out
 
 clean: ## Cleans the compiled sources.
 	rm -rf target

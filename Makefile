@@ -143,7 +143,7 @@ rust-run-isa-sim:
 rust-run-pipeline:
 	make -C rust/$(RUST_PROJECT) run-pipeline
 
-rust-disassemble:
+rust-disassembly:
 	make -C rust/$(RUST_PROJECT) disassemble
 
 rust-clean:

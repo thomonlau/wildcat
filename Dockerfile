@@ -39,6 +39,7 @@ RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 RUN . "$HOME/.cargo/env"
 ENV PATH=/root/.cargo/bin:$PATH
 RUN rustup target add riscv32i-unknown-none-elf
+RUN rustup component add llvm-tools-preview
 
 # Install Rust 1.36.0 (for LLVM 8) for WCET project
 WORKDIR /root/wildcat/rust/wcet
