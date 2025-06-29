@@ -10,13 +10,13 @@ help: ## Show this help.
 
 compile: ## Compiles using 'cargo build'.
 	cargo build --release
-	cp $(PATH_TO_COMPILED)/$(PROJECT_NAME) $(PATH_TO_COMPILED)/$(PROJECT_NAME).out
+	mv $(PATH_TO_COMPILED)/$(PROJECT_NAME){,.out}
 
 run-isa-sim: ## Runs the ISA simulator.
 	make compile
 	cd $(ROOT_DIR) && sbt "runMain wildcat.isasim.SimRV $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/$(PROJECT_NAME).out"
 
-run-pipeline: ## Runs the pipeline simulator.
+run-hw-sim: ## Runs the pipeline simulator.
 	make compile
 	cd $(ROOT_DIR) && sbt "runMain wildcat.pipeline.WildcatTop $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/$(PROJECT_NAME).out"
 

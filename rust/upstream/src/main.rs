@@ -10,20 +10,24 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {};
 }
 
-fn uart_write(c: u8) {
-    unsafe {
-        UART_ADDR.write_volatile(c as u32);
+#[inline(never)]
+#[unsafe(no_mangle)]
+fn main() {
+    let mut sum: u32 = 0;
+    let mut last: u32 = 0;
+    let mut curr: u32 = 1;
+    for _i in 1..6 {
+        sum = last + curr;
+        last = curr;
+        curr = sum;
     }
-}
-
-fn uart_print(s: &str) {
-    for byte in s.bytes() {
-        uart_write(byte);
+    unsafe {
+        UART_ADDR.write_volatile(sum + 48);
     }
 }
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    uart_print("Hello from Rust!");
-    loop {};
+    main();
+    loop {}
 }

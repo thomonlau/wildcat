@@ -27,7 +27,7 @@ run-isa-sim: ## Runs the ISA simulator.
 	make link
 	cd $(ROOT_DIR) && sbt "runMain wildcat.isasim.SimRV $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/main.out"
 
-run-pipeline: ## Runs the pipeline simulator.
+run-hw-sim: ## Runs the pipeline simulator.
 	make link
 	cd $(ROOT_DIR) && sbt "runMain wildcat.pipeline.WildcatTop $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/main.out"
 

@@ -140,8 +140,8 @@ rust-compile:
 rust-run-isa-sim:
 	make -C rust/$(RUST_PROJECT) run-isa-sim
 
-rust-run-pipeline:
-	make -C rust/$(RUST_PROJECT) run-pipeline
+rust-run-hw-sim:
+	make -C rust/$(RUST_PROJECT) run-hw-sim
 
 rust-disassembly:
 	make -C rust/$(RUST_PROJECT) disassembly

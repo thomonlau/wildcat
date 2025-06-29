@@ -50,3 +50,75 @@ RUN rustup target add riscv32imc-unknown-none-elf
 # Entrypoint
 WORKDIR /root
 ENTRYPOINT ["/bin/bash"]
+
+## The following setup is for building the wcet-base image.
+## Note that it can take a while to build (>30 min from experience).
+## Therefore, it is not included above, but build separatly, as it is a static dependency for this project.
+## However, it is included here, so it can be build if the wcet image is not available.
+## Finally, in the following, comments are marked with '##', while commands are marked with '#'.
+
+# FROM ubuntu:20.04
+
+## Timezone
+#ENV TZ="UTC"
+#RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
+#RUN echo $TZ > /etc/timezone && rm -rf /var/lib/apt/lists/*
+#ENV HOME=/root
+
+## Base Configuration
+#RUN apt update -y
+#RUN apt install -y git wget curl tar sudo apt-utils nano
+#ENV LANG=en_US.utf8
+
+## Platin and patmos-clang setup
+
+## Install dependencies for patmos-clang / Platin
+#RUN apt update -y
+#RUN apt install -y build-essential
+#RUN apt install -y ninja-build
+#RUN apt install -y cmake
+#RUN apt install -y ruby
+#RUN apt install -y ruby-dev
+#RUN apt install -y python3
+#RUN apt install -y liblpsolve55-dev
+#RUN apt install -y lp-solve
+#RUN apt install -y pkg-config
+#RUN apt install -y libssl-dev
+#RUN apt install -y gcc-riscv64-unknown-elf
+
+#RUN gem install bundler -v 2.4.22
+
+## Setup patmos llvm and clang
+#WORKDIR /root
+#RUN git clone --branch llvm_70_pml_arm https://gitlab.cs.fau.de/fusionclock/llvm.git /root/patmos-llvm
+#WORKDIR /root/patmos-llvm/tools
+#RUN git clone --branch clang_70_pml_arm https://gitlab.cs.fau.de/fusionclock/clang-riscv.git clang
+#WORKDIR /root/patmos-llvm
+#RUN mkdir -p /root/build/patmos-llvm
+#WORKDIR /root/build/patmos-llvm
+#RUN LD=ld.gold cmake -G "Ninja" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+#       -DCMAKE_BUILD_TYPE=Debug \
+#       -DLLVM_TARGETS_TO_BUILD="ARM;X86;AArch64" \
+#       -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD="RISCV" \
+#       -DLLVM_INCLUDE_EXAMPLES=OFF \
+#       -DLLVM_INCLUDE_TESTS=OFF \
+#       -DCLANG_ENABLE_ARCMT=OFF \
+#       -DCLANG_ENABLE_STATIC_ANALYZER=OFF \
+#       -DLLVM_BUILD_TOOLS=OFF \
+#       /root/patmos-llvm/
+#RUN ninja clang llvm-dis llvm-ar llvm-as llvm-objdump -j 8
+#WORKDIR /root/build/patmos-llvm/bin
+#RUN ls -l
+#RUN for file in *; do \
+#               if [[ -x "$file" ]]; then \
+#                   ln -sr "$file" patmos-"$(basename "$file")"; \
+#               fi; \
+#           done
+#ENV PATH=/root/build/patmos-llvm/bin:/root/platin:$PATH
+
+## Fixing quirks for Platin
+#ENV LD_LIBRARY_PATH=/usr/lib/lp_solve
+
+## Entrypoint
+#WORKDIR /root
+#ENTRYPOINT ["/bin/bash"]
