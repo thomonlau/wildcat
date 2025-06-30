@@ -32,6 +32,9 @@ RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E4
 RUN sudo chmod 644 /etc/apt/trusted.gpg.d/scalasbt-release.gpg
 RUN sudo apt-get update
 RUN sudo apt-get install -y sbt
+WORKDIR /root/wildcat
+RUN sbt clean
+RUN sbt compile
 
 # Install Rust (upstream)
 WORKDIR /
