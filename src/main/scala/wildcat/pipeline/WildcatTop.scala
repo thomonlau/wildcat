@@ -24,7 +24,7 @@ class WildcatTop(file: String) extends Module {
   val (memory, start) = Util.getCode(file)
 
   // Here switch between different designs
-  val cpu = Module(new ThreeCats(start))
+  val cpu = Module(new ThreeCats(start.asUInt))
   // val cpu = Module(new WildFour())
   // val cpu = Module(new StandardFive())
   val dmem = Module(new ScratchPadMem(memory))

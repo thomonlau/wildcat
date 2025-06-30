@@ -7,7 +7,8 @@ import chisel3._
 class SynthTopFmax() extends Wildcat {
 
   // Here we can switch designs
-  val cpu = Module(new ThreeCats())
+  val start = 0.U;
+  val cpu = Module(new ThreeCats(start))
   // val cpu = Module(new WildFour())
   // val cpu = Module(new StandardFive())
   cpu.io.imem <> io.imem
