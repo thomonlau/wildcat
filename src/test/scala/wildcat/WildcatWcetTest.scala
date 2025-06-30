@@ -26,6 +26,7 @@ class WildcatWcetTest() extends AnyFlatSpec with ChiselScalatestTester {
           }
         }
         assert(stop, "Timeout")
+        println(s"Total cycle count: ${d.io.cycles.peekInt() + 1}")
       }
     }
   }

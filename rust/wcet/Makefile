@@ -4,9 +4,6 @@ PROJECT_NAME = wcet
 PATH_FROM_ROOT = rust/$(PROJECT_NAME)
 PATH_TO_COMPILED = target
 
-hello:
-	echo $(HELLO)
-
 help: ## Show this help.
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
 
@@ -22,11 +19,11 @@ wcet-analysis: ## Runs the Platin WCET tool on 'main.o' and 'main.ll.pml' using 
 link: ## Links the compiled 'main.o' to 'main.out' using 'riscv64-unknown-elf-ld' (necessary for ISA and hardware simulator).
 	make compile
 	riscv64-unknown-elf-gcc -march=rv32i -mabi=ilp32 linking/crt0.c -c -o $(PATH_TO_COMPILED)/crt0.o
-	riscv64-unknown-elf-ld -o $(PATH_TO_COMPILED)/main.out main.o crt0.o -m elf32lriscv -Ttext 0
+	riscv64-unknown-elf-ld -o $(PATH_TO_COMPILED)/$(PROJECT_NAME).out main.o crt0.o -m elf32lriscv -Ttext 0
 
 run-isa-sim: ## Runs the ISA simulator.
 	make link
-	cd $(ROOT_DIR) && sbt "runMain wildcat.isasim.SimRV $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/main.out"
+	cd $(ROOT_DIR) && sbt "runMain wildcat.isasim.SimRV $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/$(PROJECT_NAME).out"
 
 run-hw-sim: ## Runs the pipeline simulator.
 	make link
@@ -34,7 +31,7 @@ run-hw-sim: ## Runs the pipeline simulator.
 
 disassembly: ## Shows disassembly using 'riscv64-unknown-elf-objdump'.
 	make link
-	riscv64-unknown-elf-objdump -dfh $(PATH_TO_COMPILED)/main.out
+	riscv64-unknown-elf-objdump -dfh $(PATH_TO_COMPILED)/$(PROJECT_NAME).out
 
 clean: ## Cleans the compiled sources.
 	rm -rf target
