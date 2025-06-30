@@ -22,14 +22,8 @@ fn uart_print(s: &str) {
     }
 }
 
-#[inline(never)]
 #[no_mangle]
-fn foo() {
-    uart_print("Foo");
-}
-
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+pub extern "C" fn main() -> u32 {
     uart_print("Hello from Rust!");
-    loop {};
+    0
 }

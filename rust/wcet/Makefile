@@ -12,8 +12,8 @@ help: ## Show this help.
 
 compile: ## Compiles using 'rustc' to emit LLVM-IR and 'clang' as driver for code and PML generation.
 	mkdir -p $(PATH_TO_COMPILED)
-	cd $(PATH_TO_COMPILED) && rustc --emit=llvm-ir --target=riscv32imc-unknown-none-elf -C opt-level=3 ../src/main.rs
-	cd $(PATH_TO_COMPILED) && clang -target riscv32-unknown-elf -c -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 main.ll -o main.o
+	rustc --emit=llvm-ir --target=riscv32imc-unknown-none-elf -C opt-level=3 src/main.rs --out-dir=$(PATH_TO_COMPILED)
+	clang -target riscv32-unknown-elf -c -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 $(PATH_TO_COMPILED)/main.ll -o $(PATH_TO_COMPILED)/main.o
 
 wcet-analysis: ## Runs the Platin WCET tool on 'main.o' and 'main.ll.pml' using entry defined by ENTRY_POINT.
 	make compile
@@ -21,7 +21,8 @@ wcet-analysis: ## Runs the Platin WCET tool on 'main.o' and 'main.ll.pml' using 
 
 link: ## Links the compiled 'main.o' to 'main.out' using 'riscv64-unknown-elf-ld' (necessary for ISA and hardware simulator).
 	make compile
-	cd $(PATH_TO_COMPILED) && riscv64-unknown-elf-ld -o main.out main.o -m elf32lriscv -Ttext 0
+	riscv64-unknown-elf-gcc -march=rv32i -mabi=ilp32 linking/crt0.c -c -o $(PATH_TO_COMPILED)/crt0.o
+	riscv64-unknown-elf-ld -o $(PATH_TO_COMPILED)/main.out main.o crt0.o -m elf32lriscv -Ttext 0
 
 run-isa-sim: ## Runs the ISA simulator.
 	make link
@@ -29,11 +30,11 @@ run-isa-sim: ## Runs the ISA simulator.
 
 run-hw-sim: ## Runs the pipeline simulator.
 	make link
-	cd $(ROOT_DIR) && sbt "runMain wildcat.pipeline.WildcatTop $(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/main.out"
+	cd $(ROOT_DIR) && sbt -Dtest-file=$(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/$(PROJECT_NAME).out "testOnly wildcat.WildcatWcetTest"
 
 disassembly: ## Shows disassembly using 'riscv64-unknown-elf-objdump'.
 	make link
-	cd $(PATH_TO_COMPILED) && riscv64-unknown-elf-objdump -dfh main.out
+	riscv64-unknown-elf-objdump -dfh $(PATH_TO_COMPILED)/main.out
 
 clean: ## Cleans the compiled sources.
 	rm -rf target
