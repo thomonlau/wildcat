@@ -17,6 +17,7 @@ class WildcatTestTop(file: String) extends Module {
     val tx = Output(UInt(1.W))
     val rx = Input(UInt(1.W))
     val stop = Output(Bool())
+    val cycles = Output(UInt(32.W))
   })
   val cpuTop = Module(new WildcatTop(file))
 
@@ -26,6 +27,8 @@ class WildcatTestTop(file: String) extends Module {
   BoringUtils.bore(cpuTop.cpu.stop, Seq(io.stop))
   io.led := DontCare
   BoringUtils.bore(cpuTop.ledReg, Seq(io.led))
+  io.cycles := DontCare
+  BoringUtils.bore(cpuTop.cpu.cyclesReg, Seq(io.cycles))
 
   cpuTop.io.rx := io.rx
   io.tx := cpuTop.io.tx

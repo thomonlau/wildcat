@@ -18,6 +18,10 @@ import wildcat.pipeline.Functions._
  */
 class ThreeCats() extends Wildcat() {
 
+  // Clock cycle counter
+  val cyclesReg = RegInit(0.U(32.W))
+  cyclesReg := cyclesReg + 1.U
+
   // some forward declarations
   val stall = WireDefault(false.B)
   val wbData = Wire(UInt(32.W))
