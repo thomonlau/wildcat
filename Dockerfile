@@ -51,7 +51,7 @@ RUN rustup override set 1.36.0
 RUN rustup target add riscv32imc-unknown-none-elf
 
 # Entrypoint
-WORKDIR /root
+WORKDIR /root/wildcat
 ENTRYPOINT ["/bin/bash"]
 
 ## The following setup is for building the wcet-base image.

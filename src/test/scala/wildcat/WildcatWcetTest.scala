@@ -20,6 +20,7 @@ class WildcatWcetTest() extends AnyFlatSpec with ChiselScalatestTester {
         d.clock.setTimeout(10000)
         while(!stop) {
           d.clock.step(1)
+          printf(s"pc_cur = 0x${d.io.pc.peekInt().toString(16)}\n")
           if (d.io.stop.peekBoolean()) {
             stop = true
             assert(d.io.regFile(10).peekInt() == 0, s"Failed test case ${d.io.regFile(3).peekInt()}")

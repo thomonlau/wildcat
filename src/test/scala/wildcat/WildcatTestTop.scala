@@ -18,7 +18,7 @@ class WildcatTestTop(file: String) extends Module {
     val rx = Input(UInt(1.W))
     val stop = Output(Bool())
     val cycles = Output(UInt(32.W))
-    val pc = Output(SInt(32.W))
+    val pc = Output(UInt(32.W))
   })
   val cpuTop = Module(new WildcatTop(file))
 
