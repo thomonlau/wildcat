@@ -16,7 +16,7 @@ import wildcat.pipeline.Functions._
  * Author: Martin Schoeberl (martin@jopdesign.com)
  *
  */
-class ThreeCats() extends Wildcat() {
+class ThreeCats(start: UInt) extends Wildcat() {
 
   // Clock cycle counter
   val cyclesReg = RegInit(0.U(32.W))
@@ -42,7 +42,7 @@ class ThreeCats() extends Wildcat() {
   // PC generation
   // the follwoing should be correct, but 2 tests fail
   // val pcReg = RegInit(-4.S(32.W).asUInt)
-  val pcReg = RegInit(0.S(32.W).asUInt)
+  val pcReg = RegInit(start)
   val pcNext = WireDefault(Mux(doBranch, branchTarget, pcReg + 4.U))
   pcReg := pcNext
   io.imem.address := pcNext

@@ -19,7 +19,7 @@ wcet-analysis: ## Runs the Platin WCET tool on 'main.o' and 'main.ll.pml' using 
 link: ## Links the compiled 'main.o' to 'main.out' using 'riscv64-unknown-elf-ld' (necessary for ISA and hardware simulator).
 	make compile
 	riscv64-unknown-elf-gcc -march=rv32i -mabi=ilp32 linking/crt0.c -c -o $(PATH_TO_COMPILED)/crt0.o
-	riscv64-unknown-elf-ld -o $(PATH_TO_COMPILED)/$(PROJECT_NAME).out main.o crt0.o -m elf32lriscv -Ttext 0
+	riscv64-unknown-elf-ld -o $(PATH_TO_COMPILED)/$(PROJECT_NAME).out $(PATH_TO_COMPILED)/main.o $(PATH_TO_COMPILED)/crt0.o -m elf32lriscv -Ttext 0
 
 run-isa-sim: ## Runs the ISA simulator.
 	make link
