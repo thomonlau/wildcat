@@ -42,13 +42,17 @@ class ThreeCats(start: UInt) extends Wildcat() {
   // PC generation
   // the follwoing should be correct, but 2 tests fail
   // val pcReg = RegInit(-4.S(32.W).asUInt)
-  val pcReg = RegInit(start)
+  val pcReg = RegInit(start + (-4.S(32.W)).asUInt)
   val pcNext = WireDefault(Mux(doBranch, branchTarget, pcReg + 4.U))
+  val firstIter = RegInit(true.B)
   pcReg := pcNext
   io.imem.address := pcNext
 
   // Fetch
   val instr = WireDefault(io.imem.data)
+  when(firstIter) {
+    instr := 0x00000013.U
+  }
   when (io.imem.stall) {
     instr := 0x00000013.U
     pcNext := pcReg
@@ -56,8 +60,8 @@ class ThreeCats(start: UInt) extends Wildcat() {
 
   // Decode, register read, and memory access
   val pcRegReg = RegNext(pcReg)
-  val instrReg = RegInit(0x00000033.U) // nop on reset
-  instrReg := Mux(doBranch, 0x00000033.U, instr)
+  val instrReg = RegInit(0x00000013.U) // nop on reset
+  instrReg := Mux(doBranch, 0x00000013.U, instr) // nop for flush
   val rs1 = instr(19, 15)
   val rs2 = instr(24, 20)
   val rd = instr(11, 7)
@@ -116,8 +120,10 @@ class ThreeCats(start: UInt) extends Wildcat() {
 
 
   // Execute
-  val decExReg = RegInit(0.U.asTypeOf(decEx))
-  decExReg := decEx
+  val decExNop = 0.U.asTypeOf(decEx)
+  decExNop.decOut := decode(0x00000013.U)
+  val decExReg = RegInit(decExNop) // nop on reset
+  decExReg := Mux(doBranch, decExNop, decEx) // nop for flush
 
   // Forwarding
   val v1 = Mux(exFwdReg.valid && exFwdReg.wbDest === decExReg.rs1, exFwdReg.wbData, decExReg.rs1Val)
@@ -162,4 +168,9 @@ class ThreeCats(start: UInt) extends Wildcat() {
 
   // Just to exit tests
   val stop = decExReg.decOut.isECall
+
+  // Disable initial setup
+  when(firstIter) {
+    firstIter := false.B
+  }
 }
