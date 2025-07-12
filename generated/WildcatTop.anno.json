@@ -1,0 +1,62 @@
+[
+  {
+    "class":"firrtl.EmitCircuitAnnotation",
+    "emitter":"firrtl.VerilogEmitter"
+  },
+  {
+    "class":"firrtl.annotations.LoadMemoryAnnotation",
+    "target":"WildcatTop.ScratchPadMem.MEM_3",
+    "fileName":"data3.hex",
+    "hexOrBinary":"h",
+    "originalMemoryNameOpt":"MEM_3"
+  },
+  {
+    "class":"firrtl.annotations.LoadMemoryAnnotation",
+    "target":"WildcatTop.ScratchPadMem.MEM_2",
+    "fileName":"data2.hex",
+    "hexOrBinary":"h",
+    "originalMemoryNameOpt":"MEM_2"
+  },
+  {
+    "class":"firrtl.annotations.LoadMemoryAnnotation",
+    "target":"WildcatTop.ScratchPadMem.MEM_1",
+    "fileName":"data1.hex",
+    "hexOrBinary":"h",
+    "originalMemoryNameOpt":"MEM_1"
+  },
+  {
+    "class":"firrtl.annotations.LoadMemoryAnnotation",
+    "target":"WildcatTop.ScratchPadMem.MEM",
+    "fileName":"data0.hex",
+    "hexOrBinary":"h",
+    "originalMemoryNameOpt":"MEM"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxTargetDirAnno",
+    "targetDir":"generated"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxInlineAnno",
+    "target":"WildcatTop.ScratchPadMem",
+    "name":"WildcatTop.ScratchPadMem.MEM.v",
+    "text":"module BindsTo_0_ScratchPadMem(\n  input         clock,\n  input  [31:0] io_rdAddress,\n  output [31:0] io_rdData,\n  input  [31:0] io_wrAddress,\n  input  [31:0] io_wrData,\n  input         io_wrEnable_0,\n  input         io_wrEnable_1,\n  input         io_wrEnable_2,\n  input         io_wrEnable_3\n);\n\ninitial begin\n  $readmemh(\"data0.hex\", ScratchPadMem.MEM);\nend\n                      endmodule\n\nbind ScratchPadMem BindsTo_0_ScratchPadMem BindsTo_0_ScratchPadMem_Inst(.*);"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxInlineAnno",
+    "target":"WildcatTop.ScratchPadMem",
+    "name":"WildcatTop.ScratchPadMem.MEM_1.v",
+    "text":"module BindsTo_1_ScratchPadMem(\n  input         clock,\n  input  [31:0] io_rdAddress,\n  output [31:0] io_rdData,\n  input  [31:0] io_wrAddress,\n  input  [31:0] io_wrData,\n  input         io_wrEnable_0,\n  input         io_wrEnable_1,\n  input         io_wrEnable_2,\n  input         io_wrEnable_3\n);\n\ninitial begin\n  $readmemh(\"data1.hex\", ScratchPadMem.MEM_1);\nend\n                      endmodule\n\nbind ScratchPadMem BindsTo_1_ScratchPadMem BindsTo_1_ScratchPadMem_Inst(.*);"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxInlineAnno",
+    "target":"WildcatTop.ScratchPadMem",
+    "name":"WildcatTop.ScratchPadMem.MEM_2.v",
+    "text":"module BindsTo_2_ScratchPadMem(\n  input         clock,\n  input  [31:0] io_rdAddress,\n  output [31:0] io_rdData,\n  input  [31:0] io_wrAddress,\n  input  [31:0] io_wrData,\n  input         io_wrEnable_0,\n  input         io_wrEnable_1,\n  input         io_wrEnable_2,\n  input         io_wrEnable_3\n);\n\ninitial begin\n  $readmemh(\"data2.hex\", ScratchPadMem.MEM_2);\nend\n                      endmodule\n\nbind ScratchPadMem BindsTo_2_ScratchPadMem BindsTo_2_ScratchPadMem_Inst(.*);"
+  },
+  {
+    "class":"firrtl.transforms.BlackBoxInlineAnno",
+    "target":"WildcatTop.ScratchPadMem",
+    "name":"WildcatTop.ScratchPadMem.MEM_3.v",
+    "text":"module BindsTo_3_ScratchPadMem(\n  input         clock,\n  input  [31:0] io_rdAddress,\n  output [31:0] io_rdData,\n  input  [31:0] io_wrAddress,\n  input  [31:0] io_wrData,\n  input         io_wrEnable_0,\n  input         io_wrEnable_1,\n  input         io_wrEnable_2,\n  input         io_wrEnable_3\n);\n\ninitial begin\n  $readmemh(\"data3.hex\", ScratchPadMem.MEM_3);\nend\n                      endmodule\n\nbind ScratchPadMem BindsTo_3_ScratchPadMem BindsTo_3_ScratchPadMem_Inst(.*);"
+  }
+]

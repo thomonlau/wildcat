@@ -18,6 +18,7 @@ fn uart_write(s: &str) {
     }
 }
 
+#[unsafe(no_mangle)]
 pub extern "C" fn main() -> u32 {
     uart_write("Hello World!");
     0
@@ -29,7 +30,7 @@ pub unsafe extern "C" fn _start() {
     asm!(
     "li sp, 0x100000",
     "call {main}",
-    "ecall",
+    "ecall"
     "j 0",
     main = sym main,
     );

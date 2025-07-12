@@ -75,12 +75,7 @@ object Util {
   def readElf(fileName: String): (Array[Int], Int) = {
     val elf = ElfFile.from(new File(fileName))
     if (!elf.is32Bits() || elf.e_machine != 0xf3) throw new Exception("Not a RV32I executable")
-    /*
-    for (i <- 1 until elf.e_shnum) {
-      val sect = elf.getSection(i)
-      println(s"section $i: ${sect.header.getName} ${sect.header.sh_name} ${sect.header.sh_addr} ${sect.header.sh_size}")
-    }
-     */
+
     val startAddress = (elf.e_entry).asInstanceOf[Int]
     val textSection = elf.firstSectionByName(".text")
     val text = byteToWord(textSection.getData)
@@ -110,7 +105,6 @@ object Util {
       } else {
         throw new Exception("Unknown file extension")
       }
-    // code.foreach(x => println(f"$x%08x"))
     (code, start)
   }
 

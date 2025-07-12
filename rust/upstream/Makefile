@@ -4,7 +4,6 @@ PROJECT_NAME = upstream
 PATH_FROM_ROOT = rust/$(PROJECT_NAME)
 TARGET = riscv32i-unknown-none-elf
 PATH_TO_COMPILED = target/$(TARGET)/release
-#PATH_TO_COMPILED = target/$(TARGET)/debug
 
 help: ## Show this help.
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)

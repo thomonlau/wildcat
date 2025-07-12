@@ -18,19 +18,8 @@ fn uart_write(s: &str) {
     }
 }
 
-pub extern "C" fn main() -> u32 {
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -> ! {
     uart_write("Hello World!");
-    0
-}
-
-#[naked_function::naked]
-#[no_mangle]
-pub unsafe extern "C" fn _start() {
-    asm!(
-    "li sp, 0x100000",
-    "call {main}",
-    "ecall",
-    "j 0",
-    main = sym main,
-    );
+    loop {};
 }

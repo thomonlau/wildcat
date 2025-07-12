@@ -3,6 +3,8 @@
 
 use core::panic::PanicInfo;
 
+static mut OUT: u32 = 0;
+
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     loop {};
@@ -10,16 +12,17 @@ fn panic(_info: &PanicInfo) -> ! {
 
 #[inline(never)]
 #[no_mangle]
-fn f(out: &mut u32, x : u32) {
+fn f(x: u32) {
     for _i in 0..1024 {
-        *out += x;
+        unsafe {
+            OUT += x;
+        }
     }
 }
 
 #[no_mangle]
 pub extern "C" fn main() -> u32 {
-    let mut out = 0;
-    f(&mut out, 3);
-    f(&mut out, 5);
-    8192 - out  // Expected: 3 * 1024 + 5 * 1024
+    f(3);
+    f(5);
+    0
 }

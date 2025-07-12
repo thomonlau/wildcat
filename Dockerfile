@@ -5,7 +5,7 @@ FROM wcet-base
 
 # Setup for Platin
 WORKDIR /root
-RUN git clone https://github.com/tanneberger/platin.git
+RUN git clone https://github.com/thomonlau/platin.git
 RUN mkdir -p /root/gems
 ENV GEM_HOME=/root/gems
 WORKDIR /root/platin
@@ -44,11 +44,23 @@ ENV PATH=/root/.cargo/bin:$PATH
 RUN rustup target add riscv32i-unknown-none-elf
 RUN rustup component add llvm-tools-preview
 
-# Install Rust 1.36.0 (for LLVM 8) for WCET project
+# Install Rust 1.37.0 (for LLVM 8) for WCET project
 WORKDIR /root/wildcat/rust/wcet
-RUN rustup install 1.36.0
-RUN rustup override set 1.36.0
+RUN rustup install 1.37.0 --profile=minimal
+RUN rustup override set 1.37.0
 RUN rustup target add riscv32imc-unknown-none-elf
+
+# Extract libraries for Rust linking
+WORKDIR /root/wildcat/rust/wcet/lib
+RUN ar -x $(rustc --print sysroot)/lib/rustlib/riscv32imc-unknown-none-elf/lib/libcore*.rlib
+RUN ar -x $(rustc --print sysroot)/lib/rustlib/riscv32imc-unknown-none-elf/lib/libcompiler_builtins*.rlib
+RUN mv core*.o core.o
+RUN mv compiler_builtins*.o compiler_builtins.o
+RUN rm *.z *.bin
+RUN riscv64-unknown-elf-objcopy --only-section=.text.memcmp --section-alignment=4 compiler_builtins.o memcmp.o
+RUN riscv64-unknown-elf-objcopy --only-section=.text.memcpy --section-alignment=4 compiler_builtins.o memcpy.o
+RUN riscv64-unknown-elf-objcopy --only-section=.text.memset --section-alignment=4 compiler_builtins.o memset.o
+RUN riscv64-unknown-elf-ld -r memcpy.o memcmp.o memset.o -o libmem.o -m elf32lriscv
 
 # Entrypoint
 WORKDIR /root/wildcat
