@@ -31,7 +31,7 @@ fn init(seed: &mut i32, data: &mut [i32]) {
 fn linear_search(x : i32, data: &[i32]) -> bool {
     for i in 0..data.len() {
         if data[i] == x {
-            true
+            return true
         }
     }
     false
@@ -39,10 +39,10 @@ fn linear_search(x : i32, data: &[i32]) -> bool {
 
 #[no_mangle]
 pub extern "C" fn main() -> u32 {
-    let n = 32;
+    const N : usize = 32;
     let mut seed : i32 = 0;
     let mut data : [i32; n] = [0; n];
     init(&mut seed, &mut data);
-    let result = linear_search(3025, &data);
+    let result = linear_search(7640, &data);
     if result { 0 } else { 1 }
 }

@@ -21,8 +21,8 @@ fn fib(n : u32) -> u32 {
     let mut last: u32 = 0;
     let mut curr: u32 = 1;
 
-    if n <= 0 { -1 }
-    if n == 1 { 1 }
+    if n <= 0 { panic!() }
+    if n == 1 { return 1 }
     for _i in 1..n {
         sum = last + curr;
         last = curr;
@@ -40,7 +40,7 @@ fn eval(actual : u32, expected : u32) -> bool {
     }
 }
 
-#[unsafe(no_mangle)]
+#[no_mangle]
 pub extern "C" fn main() {
     if !eval(fib(1), 1) { 1 };
     if !eval(fib(2), 1) { 1 };
