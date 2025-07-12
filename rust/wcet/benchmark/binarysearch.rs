@@ -8,6 +8,12 @@ fn panic(_info: &PanicInfo) -> ! {
     loop {};
 }
 
+// Out-of-bounds check (Rust 1.37.0)
+#[no_mangle]
+fn _ZN4core9panicking18panic_bounds_check17h0537ade040df571eE() -> ! {
+    loop{}
+}
+
 #[derive(Copy, Clone, Default)]
 struct Data {
     key: i32,
@@ -23,7 +29,7 @@ fn random_integer(seed : &mut i32) -> i32 {
 #[inline(never)]
 fn init(seed: &mut i32, data: &mut [Data]) {
     for i in 0..15 {
-        data[i].key = random_integer(seed);
+        data[i].key = i as i32;
         data[i].value = random_integer(seed);
     }
 }

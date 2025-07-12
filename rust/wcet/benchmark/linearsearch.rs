@@ -29,20 +29,21 @@ fn init(seed: &mut i32, data: &mut [i32]) {
 
 #[inline(never)]
 fn linear_search(x : i32, data: &[i32]) -> bool {
-    for i in 0..data.len() {
-        if data[i] == x {
+    let mut curr = 0;
+    for _ in 0..data.len() {
+        if data[curr] == x {
             return true
         }
+        curr += 1;
     }
     false
 }
 
 #[no_mangle]
 pub extern "C" fn main() -> u32 {
-    const N : usize = 32;
     let mut seed : i32 = 0;
-    let mut data : [i32; n] = [0; n];
+    let mut data : [i32; 15] = [0; 15];
     init(&mut seed, &mut data);
-    let result = linear_search(7640, &data);
+    let result = linear_search(7640, &mut data);
     if result { 0 } else { 1 }
 }

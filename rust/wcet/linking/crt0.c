@@ -14,18 +14,3 @@ void abort(void)
 {
     for(;;);
 }
-
-// Atomic stubs - not provided in linking, cannot be handled in RV32I
-// Note: Will loop infinitely for now
-void __atomic_load_1(void) {
-    for(;;);
-}
-void __atomic_load_2(void) {
-    for(;;);
-}
-void __atomic_load_3(void) {
-    for(;;);
-}
-void __atomic_load_4(void) {
-    for(;;);
-}

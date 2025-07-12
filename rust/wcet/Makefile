@@ -18,7 +18,8 @@ link: ## Links the compiled '$(SOURCE_FILE).o' to '$(SOURCE_FILE).out' using 'ri
 	make compile
 	riscv64-unknown-elf-gcc -march=rv32i -mabi=ilp32 linking/crt0.c -c -o $(PATH_TO_COMPILED)/crt0.o
 	riscv64-unknown-elf-ld -o $(PATH_TO_COMPILED)/$(SOURCE_FILE).out $(PATH_TO_COMPILED)/$(SOURCE_FILE).o $(PATH_TO_COMPILED)/crt0.o -m elf32lriscv -Ttext 0 \
-	/usr/lib/gcc/riscv64-unknown-elf/9.3.0/rv32i/ilp32/libgcc.a lib/libmem.o --gc-sections
+	lib/compiler_builtins.o --gc-sections
+	#/usr/lib/gcc/riscv64-unknown-elf/9.3.0/rv32i/ilp32/libgcc.a lib/libmem.o --gc-sections
 	#lib/core.o lib/compiler_builtins.o --gc-sections
 
 wcet-analysis: ## Runs the Platin WCET tool on '$(SOURCE_FILE).out' and '$(SOURCE_FILE).ll.pml' using entry defined by WCET_ENTRY_POINT (defaults to 'main').

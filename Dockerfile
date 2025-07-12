@@ -50,17 +50,14 @@ RUN rustup install 1.37.0 --profile=minimal
 RUN rustup override set 1.37.0
 RUN rustup target add riscv32imc-unknown-none-elf
 
-# Extract libraries for Rust linking
+# Extract libraries for Rust linking (using Rust 1.38.0 for riscv32i-unknown-none-elf)
 WORKDIR /root/wildcat/rust/wcet/lib
-RUN ar -x $(rustc --print sysroot)/lib/rustlib/riscv32imc-unknown-none-elf/lib/libcore*.rlib
-RUN ar -x $(rustc --print sysroot)/lib/rustlib/riscv32imc-unknown-none-elf/lib/libcompiler_builtins*.rlib
-RUN mv core*.o core.o
+RUN rustup install 1.38.0 --profile=minimal
+RUN rustup override set 1.38.0
+RUN rustup target add riscv32i-unknown-none-elf
+RUN ar -x $(rustc --print sysroot)/lib/rustlib/riscv32i-unknown-none-elf/lib/libcompiler_builtins*.rlib
 RUN mv compiler_builtins*.o compiler_builtins.o
 RUN rm *.z *.bin
-RUN riscv64-unknown-elf-objcopy --only-section=.text.memcmp --section-alignment=4 compiler_builtins.o memcmp.o
-RUN riscv64-unknown-elf-objcopy --only-section=.text.memcpy --section-alignment=4 compiler_builtins.o memcpy.o
-RUN riscv64-unknown-elf-objcopy --only-section=.text.memset --section-alignment=4 compiler_builtins.o memset.o
-RUN riscv64-unknown-elf-ld -r memcpy.o memcmp.o memset.o -o libmem.o -m elf32lriscv
 
 # Entrypoint
 WORKDIR /root/wildcat

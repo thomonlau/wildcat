@@ -17,9 +17,9 @@ class WildcatWcetTest() extends AnyFlatSpec with ChiselScalatestTester {
     test(new WildcatTestTop(app)).withAnnotations(Seq(WriteVcdAnnotation)) {
       d => {
         var stop = false
-        d.clock.setTimeout(10000)
+        d.clock.setTimeout(25000)
         while(!stop) {
-          if(d.clock % 100 == 0) { // Also for debug -> TODO: Should be removed at some point
+          if(false) { // Also for debug -> TODO: Should be removed at some point
             printf(s"pcReg = 0x${d.io.pc.peekInt().toString(16)}\n")
             printf(s"pcRegReg = 0x${d.io.pcRegReg.peekInt().toString(16)}\n")
             printf(s"decExReg = 0x${d.io.decExReg.peekInt().toString(16)}\n")

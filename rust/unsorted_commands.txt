@@ -1,0 +1,89 @@
+docker run -it --rm  wcet-wildcat
+
+rustc --emit=llvm-ir --target=riscv32imc-unknown-none-elf -C opt-level=3 src/main.rs
+
+clang -target riscv32-unknown-elf -c -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 main.ll -o main.o
+
+platin wcet -i main.ll.pml -b main.o --report --analysis-entry “_start”
+
+riscv64-unknown-elf-objdump -d --no-show-raw-insn main.o
+
+sbt "runMain wildcat.isasim.SimRV $(PATH_TO_COMPILED_RUST)/$(RUST_APP).bin"
+
+rust-objcopy -O binary -j .text $(PATH_TO_COMPILED_RUST)/text.bin
+
+riscv64-unknown-elf-objcopy -O binary -j .text main.o text.bin
+
+sbt "runMain wildcat.isasim.SimRV rust/starter-project/text.bin"
+
+hexdump -e '"%08x\n"' rust/starter-project/text.bin
+
+riscv64-unknown-elf-objdump -d -f -h main.o
+
+riscv64-unknown-elf-ld -o main.elf main.o -m elf32lriscv -Ttext 0
+
+readelf -h rust/starter-project/main.out
+
+
+  volatile int out;
+__attribute__((noinline)) void f(int x) {
+ int i; for(i = 0; i<1024;i++) out+=x; }
+  int main() { f(3); f(5); return 0; }
+
+clang -target riscv32-unknown-elf -march=rv32i -mabi=ilp32 -fuse-ld=/usr/bin/riscv64-unknown-elf-ld -o main.elf main.ll
+
+run-hw-sim: ## Runs the pipeline simulator.
+	make compile
+	cd $(ROOT_DIR) && sbt -DbinaryPath=$(PATH_FROM_ROOT)/$(PATH_TO_COMPILED)/$(PROJECT_NAME).out "testOnly wildcat.WildcatWcetTest"
+
+riscv64-unknown-elf-ld -r memcpy.o memcmp.o memset.o -o libmem.o -m elf32lriscv
+
+riscv64-unknown-elf-objcopy --only-section=.text.memcmp --section-alignment=4 compiler_builtins.o memcmp.o
+
+
+clang -target riscv32-unknown-none-elf -c -o basic.c.o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 -O3 basic.c
+
+clang -target riscv32-unknown-none-elf -c -o binarysearch.c.o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 -O3 binarysearch.c
+
+clang -target riscv32-unknown-none-elf -c -o binarysearch.c.o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 -O3 binarysearch.c
+
+platin wcet -i basic.c.pml -b basic.c.o --report --analysis-entry main
+
+platin wcet -i binarysearch.c.pml -b binarysearch.c.o --report --analysis-entry main
+
+platin wcet -i binarysearch.c.pml -b binarysearch.c.o --report --analysis-entry main
+
+riscv64-unknown-elf-ld -o basic.c.out basic.c.o ../target/crt0.o -m elf32lriscv -Ttext 0
+
+riscv64-unknown-elf-ld -o basic.c.out basic.c.o ../target/crt0.o /usr/lib/gcc/riscv64-unknown-elf/9.3.0/rv32i/ilp32/libgcc.a -m elf32lriscv -Ttext 0
+
+riscv64-unknown-elf-objdump -dhf basic.c.o
+
+sbt -Dtest-file=rust/wcet/src/basic.c.out "testOnly wildcat.WildcatWcetTest"
+
+sbt -Dtest-file=rust/wcet/src/fib.c.out "testOnly wildcat.WildcatWcetTest"
+
+
+
+
+riscv64-unknown-elf-ld -o fib.c.out fib.c.o ../linking/crt0.o -m elf32lriscv -Ttext 0 ../lib/compiler_builtins.o --gc-sections
+
+riscv64-unknown-elf-ld -o fib.c.out fib.c.o ../target/crt0.o -m elf32lriscv -Ttext 0 ../lib/compiler_builtins.o --gc-sections
+
+
+clang -target riscv32-unknown-none-elf -c -o linearsearch.c.o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 -O3 linearsearch.c
+
+platin wcet -i linearsearch.c.pml -b linearsearch.c.o --report --analysis-entry main
+
+riscv64-unknown-elf-ld -o linearsearch.c.out linearsearch.c.o ../target/crt0.o /usr/lib/gcc/riscv64-unknown-elf/9.3.0/rv32i/ilp32/libgcc.a -m elf32lriscv -Ttext 0
+
+sbt -Dtest-file=rust/wcet/benchmark/linearsearch.c.out "testOnly wildcat.WildcatWcetTest"
+
+
+clang -target riscv32-unknown-none-elf -c -o binarysearch.c.o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 -O3 binarysearch.c
+
+platin wcet -i binarysearch.c.pml -b binarysearch.c.o --report --analysis-entry main
+
+riscv64-unknown-elf-ld -o binarysearch.c.out binarysearch.c.o ../target/crt0.o /usr/lib/gcc/riscv64-unknown-elf/9.3.0/rv32i/ilp32/libgcc.a -m elf32lriscv -Ttext 0
+
+sbt -Dtest-file=rust/wcet/benchmark/binarysearch.c.out "testOnly wildcat.WildcatWcetTest"

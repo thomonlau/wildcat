@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-use core::arch::asm;
 use core::panic::PanicInfo;
 
 #[panic_handler]
@@ -23,7 +22,10 @@ fn fib(n : u32) -> u32 {
 
     if n <= 0 { panic!() }
     if n == 1 { return 1 }
-    for _i in 1..n {
+    for i in 2..48 {
+        if i > n {
+            break;
+        }
         sum = last + curr;
         last = curr;
         curr = sum;
@@ -41,11 +43,10 @@ fn eval(actual : u32, expected : u32) -> bool {
 }
 
 #[no_mangle]
-pub extern "C" fn main() {
-    if !eval(fib(1), 1) { 1 };
-    if !eval(fib(2), 1) { 1 };
-    if !eval(fib(5), 5) { 1 };
-    if !eval(fib(10), 55) { 1 };
-    if !eval(fib(37), 24157817) { 1 };
-    0
+pub extern "C" fn main() -> u32 {
+    if !eval(fib(48), 2971215073) {
+        1
+    } else {
+        0
+    }
 }
