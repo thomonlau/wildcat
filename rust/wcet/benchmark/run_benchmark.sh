@@ -4,21 +4,28 @@ current_directory=$(realpath .)
 results_directory="$current_directory/results"
 mkdir -p "$results_directory"
 
-echo "[Start] Benchmark tests"
+echo "[Start]: Benchmark tests"
 for file in "$current_directory"/*; do
   filename=$(basename "$file")
 
-  echo "[Next file]: $filename"
-
-  if[[ "$filename" == "Makefile" ||
-       "$filename" == "flow_facts.rs" ||
-       "$filename" == "flow_facts_handle.rs" ||
-       "$filename" == "run_benchmark.sh" ||
-  ]];
-  then continue
+  if [ -d "$file" ]; then
+    echo "[Ignored]: $filename (directory)"
+    contine
   fi
 
-  result_file="$results_directory/${filename}.rs.txt"
+  if [[ "$filename" == "Makefile" ||
+         "$filename" == "flow_facts.rs" ||
+         "$filename" == "flow_facts_handle.rs" ||
+         "$filename" == "flow_facts_handle" ||
+         "$filename" == "run_benchmark.sh"
+    ]]; then
+    echo "[Ignored]: $filename"
+    continue
+  fi
+
+  echo "[Next file]: $filename"
+
+  result_file="$results_directory/${filename}.res.txt"
   touch "$result_file"
 
   echo "[WCET analysis]: $filename"
@@ -29,4 +36,4 @@ for file in "$current_directory"/*; do
   make run-hw-sim FILE="$filename" >> "$result_file" 2>&1
 done
 
-echo "[End] Benchmark tests"
+echo "[End]: Benchmark tests"

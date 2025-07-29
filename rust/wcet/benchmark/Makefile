@@ -67,6 +67,9 @@ disassembly:
 	make link
 	riscv64-unknown-elf-objdump -dfh $(BUILT_DIR)/$(FILE).out
 
+run-benchmark:
+	bash run_benchmark.sh
+
 clean:
 	rm -rf $(BUILT_DIR)
 
