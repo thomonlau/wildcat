@@ -57,7 +57,11 @@ RUN rustup override set 1.38.0
 RUN rustup target add riscv32i-unknown-none-elf
 RUN ar -x $(rustc --print sysroot)/lib/rustlib/riscv32i-unknown-none-elf/lib/libcompiler_builtins*.rlib
 RUN mv compiler_builtins*.o compiler_builtins.o
-RUN rm *.z *.bin.rs
+RUN rm *.z *.bin
+RUN riscv64-unknown-elf-objcopy --only-section=.text.memcmp --section-alignment=4 compiler_builtins.o memcmp.o
+RUN riscv64-unknown-elf-objcopy --only-section=.text.memcpy --section-alignment=4 compiler_builtins.o memcpy.o
+RUN riscv64-unknown-elf-objcopy --only-section=.text.memset --section-alignment=4 compiler_builtins.o memset.o
+RUN riscv64-unknown-elf-ld -o libmem.o memcpy.o memcmp.o memset.o -m elf32lriscv -r
 
 # Entrypoint
 WORKDIR /root/wildcat

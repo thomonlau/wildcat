@@ -2,6 +2,3 @@
 name = "wcet"
 version = "0.1.0"
 edition = "2018"
-
-[dependencies]
-wcet-flow-facts = {path = "../wcet-util" }

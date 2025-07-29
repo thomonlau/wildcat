@@ -14,16 +14,18 @@ create-built-dir:
 compile-rust:
 	make create-built-dir
 	rustc --emit=llvm-ir --target=riscv32imc-unknown-none-elf -C opt-level=3 $(FILE) -o $(BUILT_DIR)/$(FILE).ll
-	cargo run --bin --manifest-path ../wcet-util/Cargo.toml -- $(BUILT_DIR)/$(FILE).ll
-	clang -target riscv32-unknown-none-elf -c -o $(BUILT_DIR)/$(FILE).o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 $(FILE).ll
+	rustc flow_facts_handle.rs && ./flow_facts_handle $(BUILT_DIR)/$(FILE).ll
+	clang -target riscv32-unknown-none-elf -c -o $(BUILT_DIR)/$(FILE).o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 $(BUILT_DIR)/$(FILE).ll
 
 compile-c:
 	make create-built-dir
-	clang -target riscv32-unknown-none-elf -c -o $(BUILT_DIR)/$(FILE).o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 -O3 $(FILE)
+	cp $(FILE) $(BUILT_DIR)
+	clang -target riscv32-unknown-none-elf -c -o $(BUILT_DIR)/$(FILE).o -mserialize-auto -mllvm -mserialize-all -march=rv32i -mabi=ilp32 -O3 $(BUILT_DIR)/$(FILE)
+	rm $(BUILT_DIR)/$(FILE)
 
 compile:
 ifeq ($(suffix $(FILE)), .rs)
-	make compile-rs
+	make compile-rust
 else ifeq ($(suffix $(FILE)), .c)
 	make compile-c
 else

@@ -1,8 +1,7 @@
 #![no_std]
 #![no_main]
 
-extern crate wcet_util;
-use wcet_util::flow_facts::llvm_loopbound;
+mod flow_facts;
 
 use core::panic::PanicInfo;
 
@@ -29,7 +28,7 @@ fn fib(n : u32) -> u32 {
         sum = last + curr;
         last = curr;
         curr = sum;
-        unsafe {llvm_loopbound(2, 100);}
+        unsafe {flow_facts::llvm_loopbound(2, 100);}
     }
     sum
 }
