@@ -26,7 +26,7 @@ fn random_integer(seed : &mut i32) -> i32 {
 fn init(seed: &mut i32, data: &mut [i32]) {
     for i in 0..data.len() {
         data[i] = random_integer(seed);
-        flow_facts::llvm_loopbound(15, 15);
+        unsafe{flow_facts::llvm_loopbound(15, 15);}
     }
 }
 
@@ -36,7 +36,7 @@ fn linear_search(x : i32, data: &[i32]) -> bool {
         if data[i] == x {
             return true
         }
-        flow_facts::llvm_loopbound(1, 15);
+        unsafe{flow_facts::llvm_loopbound(1, 15);}
     }
     false
 }

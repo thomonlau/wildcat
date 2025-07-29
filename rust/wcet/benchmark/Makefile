@@ -69,3 +69,6 @@ disassembly:
 
 clean:
 	rm -rf $(BUILT_DIR)
+
+clean-results:
+	rm -rf results
