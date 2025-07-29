@@ -23,11 +23,11 @@ app:
 	riscv64-unknown-elf-as -march rv32i_zicsr $(APP) -o a.o
 	riscv64-unknown-elf-ld -m elf32lriscv -T link.ld a.o -o a.out
 #	riscv64-unknown-elf-objdump -d a.out
-#	riscv64-unknown-elf-objcopy -O binary -j .text a.out a.bin
-#	riscv64-unknown-elf-objcopy -O binary -j .text a.out text.bin
-#	riscv64-unknown-elf-objcopy -O binary -j .data a.out data.bin
-#	cat text.bin data.bin > a.bin # this does not make much sense
-#	hexdump -e '"%08x\n"' a.bin
+#	riscv64-unknown-elf-objcopy -O binary -j .text a.out a.bin.rs
+#	riscv64-unknown-elf-objcopy -O binary -j .text a.out text.bin.rs
+#	riscv64-unknown-elf-objcopy -O binary -j .data a.out data.bin.rs
+#	cat text.bin.rs data.bin.rs > a.bin.rs # this does not make much sense
+#	hexdump -e '"%08x\n"' a.bin.rs
 
 dump:
 	riscv64-unknown-elf-objdump -d a.out

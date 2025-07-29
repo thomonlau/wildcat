@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin.rs/bash
 
 # Default values
 PART=""

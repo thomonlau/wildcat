@@ -1,4 +1,4 @@
-unsigned int fib( int );
+__attribute__((noinline)) unsigned int fib( unsigned int );
 int main ( void );
 
 unsigned int fib (unsigned int n) {

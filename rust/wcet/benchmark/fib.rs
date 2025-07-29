@@ -1,6 +1,9 @@
 #![no_std]
 #![no_main]
 
+extern crate wcet_util;
+use wcet_util::flow_facts::llvm_loopbound;
+
 use core::panic::PanicInfo;
 
 #[panic_handler]
@@ -14,21 +17,19 @@ fn _ZN4core9panicking18panic_bounds_check17h0537ade040df571eE() -> ! {
     loop{}
 }
 
+#[no_mangle]
 #[inline(never)]
 fn fib(n : u32) -> u32 {
     let mut sum: u32 = 0;
     let mut last: u32 = 0;
     let mut curr: u32 = 1;
 
-    if n <= 0 { panic!() }
     if n == 1 { return 1 }
-    for i in 2..48 {
-        if i > n {
-            break;
-        }
+    for i in 2..n {
         sum = last + curr;
         last = curr;
         curr = sum;
+        unsafe {llvm_loopbound(2, 100);}
     }
     sum
 }
@@ -44,9 +45,11 @@ fn eval(actual : u32, expected : u32) -> bool {
 
 #[no_mangle]
 pub extern "C" fn main() -> u32 {
-    if !eval(fib(48), 2971215073) {
+    let res = fib(48);
+    if !eval(res, 2971215073) {
         1
     } else {
         0
     }
 }
+

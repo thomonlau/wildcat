@@ -2,4 +2,4 @@
 target = "riscv32i-unknown-none-elf"
 
 [target.riscv32i-unknown-none-elf]
-rustflags = ["-C", "link-arg=-Ttext=0x0"]
+rustflags = ["--emit=llvm-ir", "-C", "link-arg=-Ttext=0x0"]

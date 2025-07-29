@@ -5,3 +5,10 @@ version = 4
 [[package]]
 name = "wcet"
 version = "0.1.0"
+dependencies = [
+ "wcet-flow-facts",
+]
+
+[[package]]
+name = "wcet-flow-facts"
+version = "0.1.0"

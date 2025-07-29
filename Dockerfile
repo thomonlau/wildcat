@@ -57,7 +57,7 @@ RUN rustup override set 1.38.0
 RUN rustup target add riscv32i-unknown-none-elf
 RUN ar -x $(rustc --print sysroot)/lib/rustlib/riscv32i-unknown-none-elf/lib/libcompiler_builtins*.rlib
 RUN mv compiler_builtins*.o compiler_builtins.o
-RUN rm *.z *.bin
+RUN rm *.z *.bin.rs
 
 # Entrypoint
 WORKDIR /root/wildcat
@@ -119,18 +119,18 @@ ENTRYPOINT ["/bin/bash"]
 #       -DLLVM_BUILD_TOOLS=OFF \
 #       /root/patmos-llvm/
 #RUN ninja clang llvm-dis llvm-ar llvm-as llvm-objdump -j 8
-#WORKDIR /root/build/patmos-llvm/bin
+#WORKDIR /root/build/patmos-llvm/bin.rs
 #RUN ls -l
 #RUN for file in *; do \
 #               if [[ -x "$file" ]]; then \
 #                   ln -sr "$file" patmos-"$(basename "$file")"; \
 #               fi; \
 #           done
-#ENV PATH=/root/build/patmos-llvm/bin:/root/platin:$PATH
+#ENV PATH=/root/build/patmos-llvm/bin.rs:/root/platin:$PATH
 
 ## Fixing quirks for Platin
 #ENV LD_LIBRARY_PATH=/usr/lib/lp_solve
 
 ## Entrypoint
 #WORKDIR /root
-#ENTRYPOINT ["/bin/bash"]
+#ENTRYPOINT ["/bin.rs/bash"]
