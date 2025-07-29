@@ -10,7 +10,7 @@ for file in "$current_directory"/*; do
 
   if [ -d "$file" ]; then
     echo "[Ignored]: $filename (directory)"
-    contine
+    continue
   fi
 
   if [[ "$filename" == "Makefile" ||
