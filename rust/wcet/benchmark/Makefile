@@ -57,11 +57,11 @@ link:
 
 run-isa-sim:
 	make link
-	cd $(ROOT_DIR) && sbt "runMain wildcat.isasim.SimRV $(realpath)/$(BUILT_DIR)/$(FILE).out"
+	cd $(ROOT_DIR) && sbt "runMain wildcat.isasim.SimRV $(realpath .)/$(BUILT_DIR)/$(FILE).out"
 
 run-hw-sim:
 	make link
-	cd $(ROOT_DIR) && sbt -Dtest-file=$(realpath)/$(BUILT_DIR)/$(FILE).out "testOnly wildcat.WildcatWcetTest"
+	cd $(ROOT_DIR) && sbt -Dtest-file=$(realpath .)/$(BUILT_DIR)/$(FILE).out "testOnly wildcat.WildcatWcetTest"
 
 disassembly:
 	make link

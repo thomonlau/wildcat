@@ -27,7 +27,10 @@ int linear_search( int x ) {
     int i;
     _Pragma( "loopbound min 1 max 15" )
     for ( i = 0; i < *(&data + 1) - data; i++) {
-        if(data[ i ] == x) result = 1;
+        if(data[ i ] == x) {
+            result = 1;
+            break;
+        }
     }
     return result;
 }

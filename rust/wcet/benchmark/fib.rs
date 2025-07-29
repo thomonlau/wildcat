@@ -24,11 +24,11 @@ fn fib(n : u32) -> u32 {
     let mut curr: u32 = 1;
 
     if n == 1 { return 1 }
-    for i in 2..n {
+    for _i in 2..n {
         sum = last + curr;
         last = curr;
         curr = sum;
-        unsafe {flow_facts::llvm_loopbound(2, 100);}
+        unsafe {flow_facts::llvm_loopbound(0, 46);}
     }
     sum
 }

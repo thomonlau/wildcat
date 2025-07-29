@@ -7,7 +7,7 @@ unsigned int fib (unsigned int n) {
     unsigned int curr = 1;
 
     if(n == 1) return 1;
-    _Pragma( "loopbound min 2 max 47" )
+    _Pragma( "loopbound min 0 max 46" )
     for(unsigned int i = 2; i < n; i++) {
         sum = last + curr;
         last = curr;

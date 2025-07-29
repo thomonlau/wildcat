@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 
+mod flow_facts;
+
 use core::panic::PanicInfo;
 
 #[panic_handler]
@@ -31,6 +33,7 @@ fn init(seed: &mut i32, data: &mut [Data]) {
     for i in 0..15 {
         data[i].key = i as i32;
         data[i].value = random_integer(seed);
+        unsafe{flow_facts::llvm_loopbound(15, 15)};
     }
 }
 
@@ -41,24 +44,19 @@ fn binary_search(x : i32, data: &[Data]) -> i32 {
     let mut fvalue : i32 = -1;
     let mut mid : usize;
 
-    for _ in 0..data.len() {
+    while low <= up {
         mid = (low + up) >> 1;
         if data[mid].key == x {
             // Item found
             up = low - 1;
             fvalue = data[mid].value;
-            break;
+        } else if data[mid].key > x {
+        // Item not found
+            up = mid - 1;
         } else {
-            // Item not found
-            if low == up {
-                break;
-            }
-            else if data[mid].key > x {
-                up = mid - 1;
-            } else {
-                low = mid + 1;
-            }
+            low = mid + 1;
         }
+        unsafe{flow_facts::llvm_loopbound(1, 4)};
     }
 
     fvalue
